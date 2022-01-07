@@ -11,4 +11,4 @@ The LED Strip was connected to the Pi at the 5V, GND and GPIO 18 pins, as define
 - Clone this repo (`git clone https://github.com/tedbennett/led-strip.git`)
 - Change to the led-strip directory `cd led-strip`
 - Build the image `docker build -t led-strip .`
-- Run the image `docker run --privileged` (the `rpi_ws281x` packaged requires privileged permissions)
+- Run the image `docker run --privileged -p 80:80 led-strip` (the `rpi_ws281x` packaged requires privileged permissions)

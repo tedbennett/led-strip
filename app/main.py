@@ -14,11 +14,11 @@ class ColorRequest(BaseModel):
 
 
 class ColorsRequest(BaseModel):
-    colors: str
+    colors: list[str]
 
 
 class LoopRequest(BaseModel):
-    colors: str
+    colors: list[str]
     delay: int
 
 
@@ -30,16 +30,16 @@ async def root():
 @app.post('/color')
 async def color(body: ColorRequest):
     strip.set_color(body.color)
-    return 'received data'
+    return 'OK'
 
 
 @app.post('/colors')
 async def colors(body: ColorsRequest):
     strip.set_colors(body.colors)
-    return 'received data'
+    return 'OK'
 
 
 @app.post('/loop')
 async def loop(body: LoopRequest):
     strip.set_color_loop(body.colors, body.delay)
-    return 'received data'
+    return 'OK'

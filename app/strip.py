@@ -115,7 +115,6 @@ class Strip(Adafruit_NeoPixel):
 
     def _set_color_loop(self):
         pixels = self._get_pixels()
-        print("Looping")
         for i in range(self.numPixels()):
             index = i + self.offset
             if index >= LED_COUNT:
