@@ -1,45 +1,34 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from strip import Strip
-import threading
+from fastapi.middleware.cors import CORSMiddleware
+from strip import Strip, Config
+from threading import Thread
+from queue import Queue
+
+origins = [
+    "*"
+]
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 strip = Strip()
-process = threading.Thread(target=strip.start, args=())
+queue = Queue()
+process = Thread(target=strip.start, args=(queue, ))
 process.start()
 
 
-class ColorRequest(BaseModel):
-    color: str
-
-
-class ColorsRequest(BaseModel):
-    colors: list[str]
-
-
-class LoopRequest(BaseModel):
-    colors: list[str]
-    delay: int
-
-
-@app.get("/")
-async def root():
-    return 'Welcome to pi!'
-
-
-@app.post('/color')
-async def color(body: ColorRequest):
-    strip.set_color(body.color)
+@app.post('/api/config')
+async def set(body: Config):
+    queue.put(body)
     return 'OK'
 
 
-@app.post('/colors')
-async def colors(body: ColorsRequest):
-    strip.set_colors(body.colors)
-    return 'OK'
-
-
-@app.post('/loop')
-async def loop(body: LoopRequest):
-    strip.set_color_loop(body.colors, body.delay)
-    return 'OK'
+@app.get('/api/config')
+async def config():
+    return strip.config
